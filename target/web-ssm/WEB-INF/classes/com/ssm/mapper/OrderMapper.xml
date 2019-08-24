@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.OrderMapper">
+<insert id="insertOrder" parameterType="com.ssm.po.Order">
+	insert into mimile_order (user_id, order_no, shipping_id, payment, payment_type, status, create_time) values
+		(#{user_id}, #{order_no}, #{shipping_id}, #{payment}, #{payment_type}, #{status}, #{create_time});
+</insert>
+
+	<insert id="insertOrderItem" parameterType="com.ssm.po.OrderItem">
+		insert into mimile_order_item (user_id, order_no, product_id, product_name, product_image, quantity, total_price, create_time, configure_id)
+		values (#{user_id}, #{order_no}, #{product_id}, #{product_name}, #{main_image}, #{quantity}, #{total_price}, #{create_time}, #{configure_id});
+	</insert>
+
+
+	<select id="selectCart" resultMap="cartMap">
+		select * from mimile_cart where id = #{cart_id};
+	</select>
+
+    <resultMap id="cartMap" type="com.ssm.po.Cart">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="product_id" property="product_id" jdbcType="INTEGER"/>
+        <result column="configure_id" property="configure_id" jdbcType="INTEGER"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="checked" property="checked" jdbcType="INTEGER"/>
+    </resultMap>
+
+	<select id="selectOrder" resultMap="orderMap">
+		select	* from mimile_order where user_id = #{userId} order by id desc;
+	</select>
+	<resultMap id="orderMap" type="com.ssm.po.Order">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="order_no" property="order_no" jdbcType="TIMESTAMP"/>
+		<result column="user_id" property="user_id" jdbcType="INTEGER"/>
+		<result column="shipping_id" property="shipping_id" jdbcType="INTEGER"/>
+		<result column="payment" property="payment" jdbcType="DECIMAL"/>
+		<result column="payment_type" property="payment_type" jdbcType="INTEGER"/>
+		<result column="postage" property="postage" jdbcType="INTEGER"/>
+		<result column="shipping_type" property="shipping_type" jdbcType="VARCHAR"/>
+		<result column="shipping_type_detail" property="shipping_type_detail" jdbcType="VARCHAR"/>
+		<result column="method_detail" property="method_detail" jdbcType="VARCHAR"/>
+		<result column="shipping_status" property="shipping_status" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="INTEGER"/>
+		<result column="payment_time" property="payment_time" jdbcType="TIMESTAMP"/>
+		<result column="send_time" property="send_time" jdbcType="TIMESTAMP"/>
+		<result column="end_time" property="end_time" jdbcType="TIMESTAMP"/>
+		<result column="close_time" property="close_time" jdbcType="TIMESTAMP"/>
+		<result column="create_time" property="create_time" jdbcType="TIMESTAMP"/>
+		<result column="update_time" property="update_time" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+	<select id="selectOrderItem" resultMap="orderItemMap">
+		select * from mimile_order_item where order_no = #{timestamp};
+	</select>
+	<resultMap id="orderItemMap" type="com.ssm.po.OrderItem">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="user_id" property="user_id" jdbcType="INTEGER"/>
+		<result column="order_no" property="order_no" jdbcType="TIMESTAMP"/>
+		<result column="product_id" property="product_id" jdbcType="INTEGER"/>
+		<result column="product_name" property="product_name" jdbcType="VARCHAR"/>
+		<result column="product_image" property="main_image" jdbcType="VARCHAR"/>
+		<result column="current_unit_price" property="current_unit_price" jdbcType="DECIMAL"/>
+		<result column="quantity" property="quantity" jdbcType="INTEGER"/>
+		<result column="total_price" property="total_price" jdbcType="DECIMAL"/>
+		<result column="order_item_comment" property="order_item_comment" jdbcType="VARCHAR"/>
+		<result column="create_time" property="create_time" jdbcType="TIMESTAMP"/>
+		<result column="update_time" property="update_time" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+	<delete id="deleteCart" parameterType="com.ssm.po.Cart">
+		delete from mimile_cart where id = #{id};
+	</delete>
+
+	<select id="selectProduct" resultMap="selectProductMap">
+		select * from mimile_cart natural join mimile_product where mimile_cart.id = #{cart_id};
+	</select>
+
+	<resultMap id="selectProductMap" type="com.ssm.po.Product">
+		<result column="product_id" property="product_id" jdbcType="INTEGER"/>
+		<result column="category_id" property="category_id" jdbcType="INTEGER"/>
+		<result column="id" property="Cart_id" jdbcType="INTEGER"/>
+		<result column="product_name" property="product_name" jdbcType="VARCHAR"/>
+		<result column="product_subtitle" property="product_subtitle" jdbcType="VARCHAR"/>
+		<result column="product_style" property="product_style" jdbcType="VARCHAR"/>
+		<result column="product_image" property="product_main_image" jdbcType="VARCHAR"/>
+		<result column="product_sub_image" property="product_sub_image" jdbcType="VARCHAR"/>
+		<result column="product_detail" property="product_detail" jdbcType="VARCHAR"/>
+		<result column="product_price" property="product_price" jdbcType="DECIMAL"/>
+		<result column="product_create_time" property="product_create_time" jdbcType="TIMESTAMP"/>
+		<result column="product_page_view" property="product_page_view" jdbcType="INTEGER"/>
+		<result column="configure_id" property="configure_id" jdbcType="INTEGER"/>
+		<result column="color" property="color" jdbcType="VARCHAR"/>
+		<result column="product_color_icon" property="product_color_icon" jdbcType="VARCHAR"/>
+		<result column="preview_image" property="preview_image" jdbcType="VARCHAR"/>
+		<result column="product_size" property="product_size" jdbcType="VARCHAR"/>
+		<result column="stock" property="stock" jdbcType="INTEGER"/>
+		<result column="product_buy" property="product_buy" jdbcType="INTEGER"/>
+		<result column="username" property="username" jdbcType="VARCHAR"/>
+		<result column="quantity" property="quantity" jdbcType="INTEGER"/>
+		<result column="checked" property="checked" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<select id="selectOneOrder" resultMap="selectOrderMap">
+		select * from mimile_order where order_no = #{timestamp};
+	</select>
+
+	<resultMap id="selectOrderMap" type="com.ssm.po.Order">
+		<result column="id" property="id" jdbcType="INTEGER"/>
+		<result column="order_no" property="order_no" jdbcType="TIMESTAMP"/>
+		<result column="user_id" property="user_id" jdbcType="INTEGER"/>
+		<result column="shipping_id" property="shipping_id" jdbcType="INTEGER"/>
+		<result column="payment" property="payment" jdbcType="DECIMAL"/>
+		<result column="payment_type" property="payment_type" jdbcType="INTEGER"/>
+		<result column="postage" property="postage" jdbcType="INTEGER"/>
+		<result column="shipping_type" property="shipping_type" jdbcType="VARCHAR"/>
+		<result column="shipping_type_detail" property="shipping_type_detail" jdbcType="VARCHAR"/>
+		<result column="method_detail" property="method_detail" jdbcType="VARCHAR"/>
+		<result column="shipping_status" property="shipping_status" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="INTEGER"/>
+		<result column="payment_time" property="payment_time" jdbcType="TIMESTAMP"/>
+		<result column="send_time" property="send_time" jdbcType="TIMESTAMP"/>
+		<result column="end_time" property="end_time" jdbcType="TIMESTAMP"/>
+		<result column="close_time" property="close_time" jdbcType="TIMESTAMP"/>
+		<result column="create_time" property="create_time" jdbcType="TIMESTAMP"/>
+		<result column="update_time" property="update_time" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+
+	<select id="findCart" resultMap="selectProductMap">
+		select * from mimile_cart where user_id = #{user_id} order by id desc;
+	</select>
+
+	<update id="updateStatus" parameterType="com.ssm.po.Order">
+		update mimile_order set status = 5 where order_no = #{timestamp};
+	</update>
+
+	<update id="updataStatusTo7" parameterType="com.ssm.po.Order">
+		update mimile_order set status = 7 where order_no = #{timestamp};
+	</update>
+
+	<update id="refundMoney" parameterType="com.ssm.po.User">
+		update mimile_user set balance = #{arg0}  where id = #{arg1};
+	</update>
+
+
+	<update id="updateStatus2" parameterType="com.ssm.po.Order">
+		update mimile_order set status = 2 where order_no = #{timestamp};
+	</update>
+
+	<update id="check" parameterType="com.ssm.po.User">
+		update mimile_user set balance = #{arg0} where id = #{arg1};
+	</update>
+
+</mapper>

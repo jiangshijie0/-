@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.shopCartMapper">
+    <resultMap id="ShopCartMap" type="com.ssm.po.shopCart">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="product_price" property="product_price" jdbcType="DECIMAL"/>
+        <result column="product_id" property="product_id" jdbcType="INTEGER"/>
+        <result column="configure_id" property="configure_id" jdbcType="INTEGER"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="checked" property="checked" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="cartList" resultMap="ShopCartMap">
+         select *
+         from mimile_product natural join mimile_cart natural join mimile_product_configure
+         where user_id = #{user_id};
+    </select>
+
+    <insert id="addToCart">
+        INSERT INTO `mimile`.`mimile_cart` (`user_id`, `product_id`, `configure_id`, `quantity`, `checked`) VALUES
+         (#{arg0}, #{arg1}, #{arg2}, #{arg3}, #{arg4});
+
+    </insert>
+</mapper>

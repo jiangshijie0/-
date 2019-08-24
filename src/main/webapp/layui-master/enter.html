@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="jquery-1.8.3.js"></script>
+		<script>
+		/*	$(document).ready(function() {
+				$("#demo").keydown(function(e) {
+					var curkey = e.which;
+					console.info(curkey);
+				});
+			});*/
+			function aaa(){
+				
+	//浏览器兼容
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	//判断是否按下Enter键
+		console.info(keycode);
+			}
+		</script>
+	</head>
+
+	<body>
+		测试<input id="demo" type="text"  onkeydown="aaa()" />
+	</body>
+
+</html>

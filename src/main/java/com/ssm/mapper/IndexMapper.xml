@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssm.mapper.IndexMapper">
+    <resultMap id="ProductMap" type="com.ssm.po.Product">
+        <id column="product_id" property="product_id" jdbcType="INTEGER"/>
+        <result column="category_id" property="category_id" jdbcType="INTEGER"/>
+        <result column="id" property="Cart_id" jdbcType="INTEGER"/>
+        <result column="product_name" property="product_name" jdbcType="VARCHAR"/>
+        <result column="product_subtitle" property="product_subtitle" jdbcType="VARCHAR"/>
+        <result column="product_style" property="product_style" jdbcType="VARCHAR"/>
+        <result column="product_main_image" property="product_main_image" jdbcType="VARCHAR"/>
+        <result column="product_sub_image" property="product_sub_image" jdbcType="VARCHAR"/>
+        <result column="product_detail" property="product_detail" jdbcType="VARCHAR"/>
+        <result column="product_price" property="product_price" jdbcType="DECIMAL"/>
+        <result column="product_create_time" property="product_create_time" jdbcType="TIMESTAMP"/>
+        <result column="product_page_view" property="product_page_view" jdbcType="INTEGER"/>
+        <result column="configure_id" property="configure_id" jdbcType="INTEGER"/>
+        <result column="color" property="color" jdbcType="VARCHAR"/>
+        <result column="product_color_icon" property="product_color_icon" jdbcType="VARCHAR"/>
+        <result column="preview_image" property="preview_image" jdbcType="VARCHAR"/>
+        <result column="product_size" property="product_size" jdbcType="VARCHAR"/>
+        <result column="stock" property="stock" jdbcType="INTEGER"/>
+        <result column="product_buy" property="product_buy" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="checked" property="checked" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="ShipMap" type="com.ssm.po.ShipAddress">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="receiver_name" property="receiver_name" jdbcType="VARCHAR"/>
+        <result column="receiver_phone" property="receiver_phone" jdbcType="VARCHAR"/>
+        <result column="receiver_mobile" property="receiver_mobile" jdbcType="VARCHAR"/>
+        <result column="receiver_province" property="receiver_province" jdbcType="VARCHAR"/>
+        <result column="receiver_city" property="receiver_city" jdbcType="VARCHAR"/>
+        <result column="receiver_district" property="receiver_district" jdbcType="VARCHAR"/>
+        <result column="receiver_address" property="receiver_address" jdbcType="VARCHAR"/>
+        <result column="receiver_zip" property="receiver_zip" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="categoryMap" type="com.ssm.po.Category">
+        <id column="category_id" property="category_id" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parent_id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="order_itemMap" type="com.ssm.po.Order_item">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="order_id" property="order_id" jdbcType="INTEGER"/>
+        <result column="product_id" property="product_id" jdbcType="INTEGER"/>
+        <result column="product_subid" property="product_subid" jdbcType="INTEGER"/>
+        <result column="current_unit_price" property="current_unit_price" jdbcType="DECIMAL"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="total_price" property="total_price" jdbcType="DECIMAL"/>
+        <result column="order_item_comment" property="order_item_comment" jdbcType="VARCHAR"/>
+        <result column="comment_create_time" property="comment_create_time" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="create_time" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="update_time" jdbcType="TIMESTAMP"/>
+        <result column="preview_image" property="preview_image" jdbcType="VARCHAR"/>
+        <result column="color" property="color" jdbcType="VARCHAR"/>
+        <result column="product_size" property="product_size" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="personalInfromation" type="com.ssm.po.User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="userName" jdbcType="VARCHAR"/>
+        <result column="password" property="userPassword" jdbcType="VARCHAR"/>
+        <result column="email" property="mailAddress" jdbcType="VARCHAR"/>
+        <result column="phone" property="phoneNumber" jdbcType="VARCHAR"/>
+        <result column="question" property="question" jdbcType="VARCHAR"/>
+        <result column="answer" property="answer" jdbcType="VARCHAR"/>
+        <result column="balance" property="balance" jdbcType="NUMERIC"/>
+        <result column="credit" property="credit" jdbcType="INTEGER"/>
+        <result column="membership" property="membership" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="selectOneProduct" resultMap="ProductMap">
+        select * from mimile_product WHERE product_id = #{product_id};
+    </select>
+    
+    <select id="selectIndexProduct" resultMap="ProductMap">
+        select * from mimile_product;
+    </select>
+
+
+
+
+
+
+
+    <select id="searchType" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where category_id in (select category_id
+                              from mimile_category
+                              where parent_id = #{type});
+    </select>
+
+    <select id="searchType_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1};
+    </select>
+
+    <select id="searchType_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1});
+    </select>
+
+    <select id="searchGetType2" resultMap="categoryMap">
+        select *
+        from (select distinct category_id, parent_id, name
+                       from mimile_product natural join mimile_category
+                       where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where a.parent_id = #{arg1}
+        order by category_id;
+    </select>
+
+    <select id="searchTypePrice1" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where category_id in (select category_id
+                             from mimile_category
+                             where parent_id = #{type})
+        order by product_price;
+    </select>
+
+    <select id="searchTypePrice1_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1}
+        order by product_price;
+    </select>
+
+    <select id="searchTypePrice1_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1})
+        order by product_price;
+    </select>
+
+    <select id="searchTypePrice2" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where category_id in (select category_id
+                              from mimile_category
+                              where parent_id = #{type})
+        order by product_price desc;
+    </select>
+
+    <select id="searchTypePrice2_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1}
+        order by product_price desc;
+    </select>
+
+    <select id="searchTypePrice2_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1})
+        order by product_price desc;
+    </select>
+
+    <select id="searchTypeBuy1" resultMap="ProductMap">
+        select * from mimile_product where category_id in (select category_id from mimile_category where parent_id = #{type}) order by product_buy;
+    </select>
+
+    <select id="searchTypeBuy1_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1}
+        order by product_buy;
+    </select>
+
+    <select id="searchTypeBuy1_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1})
+        order by product_buy;
+    </select>
+
+    <select id="searchTypeBuy2" resultMap="ProductMap">
+        select * from mimile_product where category_id in (select category_id from mimile_category where parent_id = #{type}) order by product_buy desc;
+    </select>
+
+    <select id="searchTypeBuy2_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1}
+        order by product_buy desc;
+    </select>
+
+    <select id="searchTypeBuy2_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1})
+        order by product_buy desc;
+    </select>
+
+    <select id="searchTypeView1" resultMap="ProductMap">
+        select * from mimile_product where category_id in (select category_id from mimile_category where parent_id = #{type}) order by product_page_view;
+    </select>
+
+    <select id="searchTypeView1_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1}
+        order by product_page_view;
+    </select>
+
+    <select id="searchTypeView1_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1})
+        order by product_page_view;
+    </select>
+
+    <select id="searchTypeView2" resultMap="ProductMap">
+        select * from mimile_product where category_id in (select category_id from mimile_category where parent_id = #{type}) order by product_page_view desc;
+    </select>
+
+    <select id="searchTypeView2_s" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id = #{arg1}
+        order by product_page_view desc;
+    </select>
+
+    <select id="searchTypeView2_B" resultMap="ProductMap">
+        select *
+        from (select *
+              from mimile_product
+              where product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) as a
+        where category_id in (select category_id
+					          from mimile_category
+                              where parent_id = #{arg1})
+        order by product_page_view desc;
+    </select>
+
+
+
+
+
+
+
+
+    <select id="search" resultMap="ProductMap">
+        select * from mimile_product where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%');
+    </select>
+
+    <select id="searchPrice1" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%')
+        order by product_price;
+    </select>
+
+    <select id="searchPrice2" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%')
+        order by product_price desc;
+    </select>
+
+    <select id="searchBuy1" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%')
+        order by product_buy;
+    </select>
+
+    <select id="searchBuy2" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%')
+        order by product_buy desc;
+    </select>
+
+    <select id="searchView1" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%')
+        order by product_page_view;
+    </select>
+
+    <select id="searchView2" resultMap="ProductMap">
+        select *
+        from mimile_product
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%')
+        order by product_page_view desc;
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <select id="searchGetType" resultMap="categoryMap">
+        select distinct category_id, parent_id, name
+        from mimile_product natural join mimile_category
+        where product_name like CONCAT(CONCAT('%', #{keyWord}), '%') or product_style like CONCAT(CONCAT('%', #{keyWord}), '%') or product_detail like CONCAT(CONCAT('%', #{keyWord}), '%');
+    </select>
+
+    <select id="searchWithType" resultMap="ProductMap">
+        select * from mimile_product where (product_name like CONCAT(CONCAT('%', #{arg0}), '%') or product_style like CONCAT(CONCAT('%', #{arg0}), '%') or product_detail like CONCAT(CONCAT('%', #{arg0}), '%')) and category_id = #{arg1};
+    </select>
+
+    <select id="getProductDetail" resultMap="ProductMap">
+        select * from mimile_product natural join mimile_product_configure where product_id=#{product_id};
+    </select>
+
+    <select id="getColor" resultMap="ProductMap">
+        select distinct color, product_color_icon from mimile_product_configure where product_id = #{product_id};
+    </select>
+
+    <select id="getSize" resultMap="ProductMap">
+        select distinct product_size from mimile_product_configure where product_id = #{arg0} and color = #{arg1};
+    </select>
+
+    <select id="getCommit" resultMap="order_itemMap">
+        SELECT preview_image, order_id, order_item_comment, color, product_size, comment_creat_time FROM mimile_order_item join mimile_product_configure using (product_id, configure_id) where product_id = #{product_id};
+    </select>
+
+    <select id="selectUser" resultMap="password" parameterType="String">
+			select password from mimile_user where username = #{userName}
+	</select>
+
+    <resultMap id="password" type="java.lang.String">
+        <result column="password" property="password" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectPersonalInformation" resultMap="personalInfromation" parameterType="com.ssm.po.User">
+		select * from mimile_user where username = #{userName}
+	</select>
+
+    <insert id="insertUser" parameterType="com.ssm.po.User">
+		insert into mimile_user(username, password, email, phone, question, answer)
+		values (#{userName}, #{userPassword}, #{mailAddress}, #{phoneNumber}, #{question}, #{answer})
+	</insert>
+
+    <select id="getStock" resultType="java.lang.Integer">
+		SELECT stock
+		FROM mimile_product_configure
+		where product_id = #{arg0} and color = #{arg1} and product_size = #{arg2};
+	</select>
+
+    <select id="getConfigByC_S" resultMap="ProductMap">
+        SELECT *
+        FROM mimile_product natural join mimile_product_configure
+        where product_id = #{arg0} and color = #{arg1} and product_size = #{arg2};
+    </select>
+
+    <select id="getAllAddress" resultMap="ShipMap">
+        select *
+        from mimile_shipping
+        where user_id = #{user_id};
+    </select>
+
+    <select id="cartList" resultMap="ProductMap">
+         select *
+         from mimile_product natural join mimile_cart natural join mimile_product_configure
+         where user_id = #{user_id};
+    </select>
+
+    <insert id="insertAddress" parameterType="com.ssm.po.ShipAddress">
+        INSERT INTO mimile_shipping (user_id, receiver_name, receiver_mobile, receiver_province, receiver_city, receiver_district, receiver_address, receiver_zip)
+        VALUES (#{user_id}, #{receiver_name}, #{receiver_mobile}, #{receiver_province}, #{receiver_city}, #{receiver_district}, #{receiver_address}, #{receiver_zip});
+    </insert>
+
+    <select id="getNew" resultMap="ProductMap">
+        select *
+        from mimile_product
+        order by product_create_time;
+    </select>
+</mapper>
+
